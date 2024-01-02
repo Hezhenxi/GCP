@@ -1,7 +1,6 @@
 # GCP
 # 谷歌云平台解决方案 :see_no_evil:
 
-
 <a name="3060-1621846615933"></a><a name="i3iw-1703890508936"></a>[GCP 开发专业认证示例](#ufyh-1701975693298)
 
 <a name="jybp-1703890508938"></a>[Cloud Storage](#25jy-1703889896088)
@@ -139,6 +138,250 @@
 
 
 <a name="ufyh-1701975693298"></a>**GCP 开发专业认证示例**
+
+其他存储和数据库选项
+
+Bigtable不是关系型数据库，不支持SQL查询、联接或多行事务。
+
+·如果您需要为联机事务处理(OLTP)系统提供全面的SQL支持，请考虑使用Cloud Spanner或Cloud SQL。
+
+·如果您需要在一个在线分析处理(OLAP)系统中进行互动式查询，请考虑使用BigQuery。
+
+·如果您必须将高度结构化的对象存储在文档数据库中，且支持ACID事务和SQL类查询，请考虑使用Firestore。
+
+<a name="trfh-1703902114133"></a>·如需以低延迟方式存储内存数据，请考虑使用Memorystore。·如需实时同步用户之间的数据，请考虑使用Firebase 实时数据库。
+
+<a name="u0yd-1703902038673"></a>**Google Kubernets Engine**
+
+<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+` `您正在使用不同的微服务开发应用程序，这些微服务必须保留在群集内部。你希望能够为每个微服务配置特定数量的副本。你还希望能够以统一的方式从任何其他微服务寻址特定的微服务，而不管微服务扩展到多少副本。您计划在 Google Kubernetes Engine 上实施此解决方案。你应该怎么做？ 
+
+A. 将每个微服务部署为一个 Deployment。使用服务在集群中公开部署，并使用服务 DNS 名称从集群内的其他微服务对其进行寻址。 
+
+B. 将每个微服务部署为一个 Deployment。使用 Ingress 在集群中公开 Deployment，并使用 Ingress IP 地址从集群内的其他微服务对 Deployment 进行寻址。 -Deployment 声明管理pod副本
+
+C.将每个微服务部署为 Pod。使用 Service 在集群中暴露 Pod,并使用 Service DNS 名称从集群内的其他微服务寻址微服务.-Service网络服务DNS寻址
+
+D.将每个微服务部署为 Pod。使用 Ingress 暴露集群中的 Pod，并使用 Ingress IP 地址从集群内的其他微服务对 Pod 进行寻址。-Ingress 7层外部 
+
+正确答案 A
+
+A. 将每个微服务部署为一个 Deployment。使用服务在集群中公开部署，并使用服务 DNS 名称从集群内的其他微服务对其进行寻址。 
+
+反馈意见 答：正确，因为 Service 在集群中将有一个 DNS 条目，其他微服务可以使用该条目来寻址 Service 所针对的 Deployment 的 Pod。 
+
+B 不正确，因为 Ingress 使用外部或内部 HTTP（s） 负载均衡器公开服务，并且它不直接应用于 Deployment。 
+
+C 是不正确的，因为 Pod 是微服务的单个实例，而 Deployment 可以配置多个副本。 
+
+D 不正确，因为它结合了选项 B 和 C 的错误。 
+
+\==============================
+
+` `您的应用在 Google Kubernetes Engine （GKE） 集群中作为容器运行。您需要使用一种安全的方法向应用程序添加密钥，以防止通过调用 Kubernetes API 服务器泄露密钥。你应该怎么做？ 
+
+A. 创建 Kubernetes 密钥，并将该密钥作为环境变量传递给容器。  -Secret仅编码
+
+B. 使用云密钥管理服务 （KMS） 密钥在集群上启用 GKE 应用层密钥加密。 -GkE应用层显示base64编码
+
+c.将密钥存储在 Cloud KMS 中。创建一个 Google 服务帐号，以便从 Cloud KMS 读取密钥。以 JSON 格式导出服务帐号密钥，并将 JSON 文件挂载到容器上，作为 ConfigMap 卷，以便从 Cloud KMS 读取 Secret。   
+
+d. 将密钥存储在机密管理器中。创建一个 Google 服务帐户以从 Secret Manager 读取 Secret。创建 Kubernetes 服务帐户以运行容器。使用 Workload Identity 以 Google 服务帐户的身份进行身份验证。 
+
+正确答案 d.将密钥存储在机密管理器中。创建一个 Google 服务帐户以从 Secret Manager 读取 Secret。创建 Kubernetes 
+
+服务帐户以运行容器。使用 Workload Identity 以 Google 服务帐户的身份进行身份验证。 
+
+反馈意见 A 不正确，因为 Kubernetes Secret 只对字符串进行编码，任何能够读取该密钥的人都可以对其进行解码。 
+
+B 不正确，因为 GKE 应用层密钥加密仍将密钥显示为 Kubernetes API 服务器中的 base64 编码字符串。 
+
+C 不正确，因为 Cloud KMS 用于存储加密密钥，而不是实际的密钥。您还将 Google 服务帐户密钥作为卷传入，如果任何人都可以读取 Secrets，则可以读取该卷。 
+
+D 是正确的，因为它提供了存储 Secret 的安全服务，也提供了使用 Workload Identity 获取 Secret 的安全方法。 
+
+\============================== 
+
+您可以使用 Istio 在 Google Kubernetes Engine （GKE） 上管理微服务应用程序。您可以通过在 GKE 集群上实施 Istio AuthorizationPolicy、Kubernetes NetworkPolicy 和 mTLS 来保护微服务之间的通信通道。您发现两个 Pod 之间对特定 URL 的 HTTP 请求失败，而 Pod 之间对其他 URL 的其他请求成功。连接问题的原因是什么？ 
+
+A。Kubernetes NetworkPolicy 资源阻止了 Pod 之间的 HTTP 流量。-NetworkPolicy仅作用pod之间，AuthorizationPolicy允许http
+
+B。发起 HTTP 请求的 Pod 正在尝试通过不正确的 TCP 端口连接到目标 Pod。
+
+C.群集的 AuthorizationPolicy 阻止针对应用程序中特定路径的 HTTP 请求。  
+
+D.集群在宽松模式下配置了 mTLS，但 Pod 的 sidecar 代理以纯文本形式发送未加密的流量。 
+
+反馈意见 A 不正确，因为 Kubernetes NetworkPolicy 资源允许您阻止 Pod 组之间的 HTTP 流量，但不能阻止所选路径的 HTTP 流量。（ https://kubernetes.io/docs/concepts/services-networking/network-policies/ ）。 
+
+B 不正确，因为如果客户端 Pod 使用不正确的端口与服务器通信，则所有 URL 路径的 Pod 请求都将超时。 
+
+C 是正确的，因为 Istio 授权策略允许您阻止特定 URL 路径 （https://istio.io/latest/docs/tasks/security/authorization/authz-http/） 的 pod 之间的 HTTP 方法 https://istio.io/latest/docs/tasks/security/authorization/authz-http/。  
+
+D 不正确，因为使用 Istio 的 mTLS 配置不会导致 HTTP 请求失败。在宽松模式（默认配置）下，服务可以接受纯文本和 mTLS 加密流量 （ https://istio.io/latest/docs/tasks/security/authentication/mtls-migration/ ）。 
+
+\==============================
+
+您正在开发一个基于微服务的应用程序，该应用程序将在 Google Kubernetes Engine （GKE） 上运行。某些服务需要访问不同的 Google Cloud API。您应该如何按照 Google 推荐的最佳做法在集群中设置这些服务的身份验证？（二选一） 
+
+A. 使用附加到 GKE 节点的服务帐户。 -无权限分离，无日志
+
+B. 通过 gcloud 命令行工具在集群上启用工作负载标识。  
+
+C. 从 Secret Manager 访问 Google 服务帐户密钥。 
+
+D. 将 Google 服务帐户密钥存储在 Secret Manager 中。 
+
+E. 使用 gcloud 通过 roles/iam.workloadIdentityUser 绑定 Google 服务帐户和 Kubernetes 服务帐户。  
+
+反馈意见 B E
+
+A 不正确。虽然它可以工作，但所有服务都使用相同的服务帐户，没有权限分离，也没有详细的日志记录。 
+
+B 和 E 将 GKE 和 Google 服务帐号一起关联起来，因此 GKE 可以使用 Google 服务帐号对服务进行身份验证。 
+
+C 不正确。虽然这是可行的，但这不是工作负载标识的推荐做法，因为服务帐户的强制密钥轮换。 
+
+D 不正确。虽然这是可行的，但这不是工作负载标识的推荐做法，因为服务帐户的强制密钥轮换。 
+
+E 和 B 同时将 GKE 和 Google 服务帐号关联起来，因此 GKE 可以使用 Google 服务帐号对服务进行身份验证
+
+\==============================
+
+贵公司的产品团队根据客户需求提出了一项新要求，即自动扩展在 Google Kubernetes Engine （GKE） 集群中运行的无状态分布式服务。您希望找到一种可以最大程度地减少更改的解决方案，因为此功能将在两周内上线。你应该怎么做？ 
+
+A. 部署垂直 Pod 自动缩放程序，并根据 CPU 负载进行缩放。 
+
+B. 部署垂直 Pod 自动缩放程序，并根据自定义指标进行缩放。 --垂直缩放需修改应用程序
+
+` `C. 部署水平 Pod 自动缩放程序，并根据 CPU 负载进行缩放。  
+
+D. 部署水平 Pod 自动缩放程序，并根据自定义指标进行缩放。 --自定义指标需Cloud Monitoring 集成
+
+反馈意见 
+
+答：A不正确：这对分布式应用程序没有帮助。 
+
+B. 不正确：这可行，但需要集成 Cloud Monitoring 并可能修改应用程序。这也不适用于分布式应用程序。 
+
+C. 正确：这将需要对代码进行最少的更改并符合要求。 
+
+D. 不正确：这可行，但需要 Cloud Monitoring 集成和可能的应用程序修改。
+
+` `==============================
+
+您正在开发一个将在 Google Cloud 上运行的 Web 应用程序。预计传入用户流量的速率是不可预测的，大多数日子没有流量，而其他日子则会出现大幅峰值。您需要应用程序自动纵向扩展和缩减，并且需要最大程度地降低与运行应用程序相关的成本。你应该怎么做？ 
+
+A. 使用 Firestore 作为数据库构建应用程序。将应用部署到 Cloud Run。 -C Run支持负载到零其余不行。
+
+B. 使用 Firestore 作为数据库构建应用程序。将应用程序部署到 Google Kubernetes Engine Standard 集群。 
+
+C. 使用 Cloud SQL 作为数据库构建应用。将应用程序部署到 Google Kubernetes Engine Autopilot 群集。 
+
+D. 使用 Firestore 作为数据库构建应用程序。将应用部署到具有自动缩放功能的 Compute Engine 托管实例组。 
+
+正确答案 A
+
+A. 使用 Firestore 作为数据库构建应用程序。将应用部署到 Cloud Run。 
+
+反馈意见 答是正确的。Cloud Run 支持扩展到零。此外，Firestore 的成本仅为存储。因此，当没有流量时，运营成本为零。 
+
+B 不正确，因为 GKE 不会扩展到零。 
+
+C 不正确，因为 GKE 不会缩放到零）。此外，运行 Cloud SQL 也会产生相关费用。 
+
+D 不正确。Compute Engine 管理无法扩展到零的实例。它至少需要一个实例才能运行。 
+
+\============================== 
+
+您希望将在 Knative 中运行的本地容器迁移到 Google Cloud。您需要确保迁移不会影响应用程序的部署策略，并且您希望使用完全托管的服务。您应该使用哪种 Google Cloud 服务来部署容器？ 
+
+A. 云运行 B. 计算引擎 C. 谷歌 Kubernetes 引擎  D. App Engine 灵活环境 
+
+正确答案 A. 云运行 
+
+反馈意见 答：A正确：Cloud Run 利用 Knative Serverless 框架，让您可以灵活地在任何 Knative 支持的集群中运行工作负载。 
+
+B. 不正确：使用 Compute Engine 意味着您要手动安装和维护 Google Kubernetes Engine 和 Knative，并且开销会改变部署策略。 
+
+C. 不正确：使用 GKE，您仍然需要管理 Worker 节点，而且它不是完全托管的服务。此外，您还需要对应用程序部署策略进行大量更改。 
+
+D. 不正确：虽然 App Engine Flexible 环境可以运行容器，但您需要对应用部署策略进行大量更改。
+
+\==============================
+
+` `贵单位最近启动了一项计划，将其旧版应用重新平台化到 Google Kubernetes Engine 上。您需要将整体式应用程序分解为微服务。多个实例对存储在共享文件系统上的配置文件具有读写访问权限。您希望最大程度地减少管理此转换所需的工作量，并且希望避免重写应用程序代码。你应该怎么做？ 
+
+A：创建新的 Cloud Storage 存储分区，并通过 FUSE 将其挂载到容器中。 -FUSE不支持并发和文件锁定
+
+B. 创建新的永久性磁盘，并将该卷装载为共享 PersistentVolume。  -不是读写多的
+
+C. 创建新的 Filestore 实例，并将该卷挂载为 nfs PersistentVolume。 -读写多
+
+D. 创建新的 ConfigMap 和 volumeMount 来存储配置文件的内容。  -ConfigMap无法从pod写入
+
+正确答案 
+
+C. 创建新的 Filestore 实例，并将该卷挂载为 nfs PersistentVolume。 
+
+反馈意见 A 不正确，因为 Cloud Storage FUSE 不支持并发和文件锁定。 
+
+B 不正确，因为持久性磁盘 PersistentVolume 不是读写多的。它只能是读写一次或多次读写。 
+
+C 是正确的，因为它是 Google Kubernetes Engine 中唯一可用于文件系统访问的托管、受支持的读-写-多存储选项。 
+
+D 不正确，因为 ConfigMap 无法从 Pod 写入。  
+
+\==============================
+
+您正处于将现场数据中心迁移到google Clout的最后阶段，您正在快速接近截止日期，并发现web apl正在被指定用于退役的服务器上运行。在迁移到Google Cloud时，您需要推荐一种更新此APL的解决方案。现代化的Web APL必须满足以下要求：
+
+Python3.x中每个月末高流量期间的自动标度
+
+开发人员必须能够快速部署新版本，以响应频繁的代码更改。
+
+您希望最小化运行服务的成本、工作量和操作开销。您应该做什么？
+
+A.在 App Engine 柔性环境中对代码进行现代化改造和部署。 
+
+B. 在 Cloud Run 上对代码进行现代化改造和部署。 -成本最低，0-X实例自动扩缩
+
+C. 将现代化应用部署到 n1-standard-1 Compute Engine 实例。 
+
+D. 要求开发团队重写应用程序，使其在 Google Kubernetes Engine 上作为容器运行。  
+
+正确答案 B. 在 Cloud Run 上对代码进行现代化改造和部署。 
+
+反馈意见 A 不正确。虽然这种方法满足所有要求，但它并不是成本最低的方法。使用 App Engine Flexible 时，始终至少有一个实例处于在线状态。 
+
+B 是正确的。Cloud Run 满足所有要求。它;即用即付设计为从 0-x 实例自动扩展，并且部署只需几秒钟而不是几分钟。 
+
+C 不正确。虽然这是一个解决方案，但它并不能满足所有要求。单个实例不会自动缩放。最后，要满足所有要求，需要额外的努力和持续的服务器管理、设置等。 
+
+D 不正确。虽然这确实满足了所有要求，但它不是成本最低的，也不是最不费力的。
+
+\==============================
+
+`  `您已在Google Kubernetes Engine （GKE） 集群中部署了 Web 应用程序。您正在查看 Cloud Monitoring 指标，发现集群的 CPU 负载全天都在波动。为了最大限度地提高性能，同时最大限度地降低成本，您希望自动调整 Pod 和注释的数量。你应该怎么做？
+
+A. 修改托管实例组 （MIG） 以启用自动缩放，以便根据 CPU 负载配置最大和最小节点数。 -不应在GKE创建的实例组上使用虚拟机的自动缩放功能。
+
+B. 在 GKE 集群上启用 Cluster Autoscaler，并将 Horizontal Pod Autoscaler （HPA） 配置为根据 CPU 负载自动扩展工作负载。
+
+C. 在 GKE 集群上启用 Cluster Autoscaler，并将 HPA 配置为基于自定义指标自动扩展工作负载。  
+
+D. 修改 MIG 以启用自动缩放以根据 CPU 负载配置最大和最小节点数量，并将垂直 Pod 自动缩放程序 （VPA） 配置为根据 CPU 负载缩放工作负载。 
+
+正确答案 B. 在 GKE 集群上启用 Cluster Autoscaler，并将 Horizontal Pod Autoscaler （HPA） 配置为根据 CPU 负载自动扩展工作负载。 
+
+反馈意见 A 不正确，因为您不应在 GKE 创建的实例组上使用 Compute Engine 的自动缩放功能。 
+
+B 是自动缩放 Kubernetes 部署的推荐方法。 
+
+C 不正确，因为默认情况下启用了 CPU 指标，并且不需要自定义指标。 
+
+<a name="jbbj-1703902082056"></a>D 不正确，因为您不应在 GKE 创建的实例组上使用 Compute Engine 的自动扩展功能。  
 
 <a name="25jy-1703889896088"></a>**Cloud Storage**
 
@@ -430,7 +673,23 @@ C 是正确的，因为使用足够数量的分隔属性可以提供足够的扩
 
 <a name="l11q-1703884660135"></a>D 不正确，因为时间戳不适合行键，在这种情况下，如果在同一毫秒内连续执行多个更新，则无意中导致 ID 冲突。 
 
-<a name="ftmk-1703884660137"></a><a name="kpfy-1702330971738"></a>**GCP概念介绍**
+<a name="kpfy-1702330971738"></a>**Google Cloud Platform主要服务**
+
+![image.png](assets/Aspose.Words.fc22da82-1209-4692-a363-13fb8782d07d.001.png)
+
+<a name="g24a-1703958573661"></a><a name="lviv-1703958571950"></a>**图1.部署在Google Cloud上的典型多层Web应用。**
+
+![image.png](assets/Aspose.Words.fc22da82-1209-4692-a363-13fb8782d07d.002.png)
+
+<a name="0pjd-1703960346839"></a><a name="un2p-1703960283871"></a>**图7.零信任微服务环境中的应用交付。**
+
+![image.png](assets/Aspose.Words.fc22da82-1209-4692-a363-13fb8782d07d.003.png)
+
+<a name="hvhk-1703960929789"></a><a name="iclq-1703960284232"></a>**网格入站网关流量**
+
+![image.png](assets/Aspose.Words.fc22da82-1209-4692-a363-13fb8782d07d.004.png)
+
+<a name="qtso-1703961239891"></a><a name="wdy9-1703961083013"></a>**GCP概念介绍**
 
 .台湾节点
 
@@ -486,7 +745,7 @@ systemctl start httpd
 
 <a name="mz0d-1703614104543"></a>选择现有磁盘快照，(同步前一个虚拟机实例的区域与-httpd)
 
-<a name="09yn-1703541282443"></a>**镜像(创建实例)**
+<a name="09yn-1703541282443"></a>**镜像(系统镜像创建实例)**
 
 <a name="mdjz-1703614307842"></a>**.公共映像**
 
@@ -548,7 +807,7 @@ vi vm.yml
 
 <a name="spba-1703736544939"></a>VPC -> ip地址 
 
-<a name="8m0l-1703731963710"></a>**负载均衡(7层，4层)**
+<a name="8m0l-1703731963710"></a>**负载均衡(7层/L7,4层/L4)**
 
 <a name="qxfq-1703776527441"></a>**内部HTTP(S)负载均衡** 
 
@@ -590,7 +849,7 @@ Google Cloud外部TCP/UDP网络负载均衡（此后称为网络负载均衡）�
 
 <a name="dvxb-1703776587051"></a>.TCP和UDP
 
-<a name="2550-1595249949242"></a>**.Armor(安全政策)**
+<a name="2550-1595249949242"></a>**.Armor(安全政策,DDos,准入IP)**
 
 Google Cloud Armor可帮助您保护Google Cloud部署免受多种类型的威胁，包括分布式拒绝服务(DDoS)攻击以及跨站脚本攻击(XSS)和
 
@@ -606,7 +865,43 @@ SQL注入(SQLi)等应用攻击。Google Clpud Armor具有一些自动保护功�
 
 <a name="gaf9-1703797873491"></a>边缘安全政策
 
-<a name="2422-1585069536532"></a>**Cloud Storage(对象存储(日志,图片))**
+<a name="gjla-1704131795897"></a>**Cloud Run**
+
+0-X实例扩缩
+
+<a name="m0jz-1704131868452"></a>在完全托管的环境中快速、安全地部署和扩展应用程序
+
+<a name="jdgb-1704131855115"></a>**Cloud Kurbernets Engine**
+
+更便捷的k8s
+
+create my-first-clusters1  -> go cloud shell
+
+nginx.yaml
+
+`    `apiversion: v1kind: Pod
+
+`    `metadata:
+
+`        `name: nginx
+
+`    `spec:
+
+`        `containers:
+
+`            `- name: nginx
+
+`            `image: nginx
+
+`            `ports:
+
+`            `- name: web
+
+`                `containerPort: 80
+
+<a name="lelk-1704131931124"></a>create pod: kubectl apply -f nginx.yml
+
+<a name="f4pw-1704131882886"></a>**Cloud Storage(对象存储(日志,图片))**
 
 <a name="cste-1703802087930"></a>**.概念**
 
@@ -842,7 +1137,11 @@ Bigtable不是关系型数据库，不支持SQL查询、联接或多行事务。
 
 <a name="rqfz-1703889554776"></a>是小型结构化数据（如购物车）的理想选择
 
-<a name="bh8z-1703872927361"></a>**Cloud Spanner(跨区域高可用)**
+<a name="bh8z-1703872927361"></a>**Cloud Spanner(数据库跨区域高可用)**
+
+<a name="16o7-1703965577093"></a>**Cloud Run（容器服务）**
+
+<a name="7w27-1703965622477"></a>Cloud Run 是一种托管的容器服务，开发者可以将其容器化的应用程序部署到云上，而无需关心底层的基础设施管理。它支持自动扩展和按使用量计费。
 
 <a name="evlf-1703889764129"></a>**Cloud Data Loss Prevention(损失预防/敏感数据)**
 
